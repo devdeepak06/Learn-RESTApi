@@ -7,7 +7,7 @@ import fs from "node:fs";
 
 const createBook = async (req: Request, res: Response, next: NextFunction) => {
   const { title, genre } = req.body;
-  console.log("File", req.files);
+  // console.log("File", req.files);
   // Call cloudinary
   const files = req.files as { [fieldname: string]: Express.Multer.File[] };
   // application/pdf
@@ -55,6 +55,8 @@ const createBook = async (req: Request, res: Response, next: NextFunction) => {
     
     // console.log("bookfilepath", bookFileUploadResult);
     // console.log("uploadResult", uploadResult);
+    // @ts-expect-error
+    console.log("User Id", req.userId);
     res.status(201).json({ id: newBook._id });
   } catch (err) {
     console.log(err);
