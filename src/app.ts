@@ -7,8 +7,11 @@ app.use(express.json());
 // Routes
 // HTTP methods: GET, POST, PUT, DELETE, PATCH
 app.get("/", (req, res, next) => {
-  res.json({ message: "Hello World" });
-  // res.send("Hello World");
+  try {
+    res.json({ message: "Welcome to the Elib Rest Api App." });
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.use("/api/users", userRouter);
