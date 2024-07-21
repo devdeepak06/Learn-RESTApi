@@ -168,4 +168,44 @@ const getSingleBook = async (
   }
 };
 
-export { createBook, updateBook, listBook, getSingleBook };
+const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
+  const bookId = req.params.bookId;
+  try {
+    const book = await bookModel.findOne({ _id: bookId });
+    if (!book) {
+      return next(createHttpError(404, "Book not found"));
+    }
+    //check access
+    const _req = req as AuthRequest;
+    if (book.author.toString() != _req.userId) {
+      return next(createHttpError(403, "Unauthorized access"));
+    }
+
+    const coverFileSplits = book.coverImage.split("/");
+    const coverImagePublicId =
+      coverFileSplits.at(-2) + "/" + coverFileSplits.at(-1)?.split(".").at(-2);
+    const bookFileSplits = book.file.split("/");
+    const bookFilePublicId =
+      bookFileSplits.at(-2) + "/" + bookFileSplits.at(-1);
+    // console.log("coverFileSplits", coverFileSplits);
+    // https://res.cloudinary.com/dkm44qhtl/image/upload/v1721556010/book-covers/fyebny0clvl2pwoxpjfl.jpg
+    // book-covers/fyebny0clvl2pwoxpjfl
+    // console.log("coverImagePublicId", coverImagePublicId);
+    // https://res.cloudinary.com/dkm44qhtl/raw/upload/v1721558633/book-pdfs/znk6upznaibd5y5yy7de.pdf
+    // book-pdfs/znk6upznaibd5y5yy7de.pdf
+    // console.log("Book file spit", bookFilePublicId);
+    //add error block
+    // delete from cloudinary
+    await cloudinary.uploader.destroy(coverImagePublicId);
+    await cloudinary.uploader.destroy(bookFilePublicId, {
+      resource_type: "raw",
+    });
+    //also delete from mongodb
+    await bookModel.deleteOne({ _id: bookId });
+    return res.sendStatus(201);
+  } catch (err) {
+    return next(createHttpError(500, "Book not found"));
+  }
+};
+
+export { createBook, updateBook, listBook, getSingleBook, deleteBook };

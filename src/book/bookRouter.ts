@@ -3,7 +3,8 @@ import {
   createBook,
   updateBook,
   listBook,
-  getSingleBook
+  getSingleBook,
+  deleteBook,
 } from "./bookController";
 import multer from "multer";
 import path from "node:path";
@@ -28,7 +29,13 @@ bookRouter.post(
 
 //List all books
 bookRouter.get("/", listBook);
+
+// getSingleBook
 bookRouter.get("/:bookId", getSingleBook);
+
+//Delete book
+bookRouter.delete("/:bookId",authenticate, deleteBook);
+
 // update book
 bookRouter.patch(
   "/:bookId",
