@@ -138,4 +138,16 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export { createBook, updateBook };
+// listbook method use to list all books
+const listBook = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // todos: add pagination(using mongoose pagination)
+    const book = await bookModel.find();
+
+    res.json(book);
+  } catch (err) {
+    return next(createHttpError(500, "Error while getting book"));
+  }
+};
+
+export { createBook, updateBook, listBook };
