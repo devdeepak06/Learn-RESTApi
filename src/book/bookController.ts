@@ -85,7 +85,6 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
 
     if (files.coverImage) {
       const fileName = files.coverImage[0].filename;
-      // const coverMimeType = files.coverImage[0].mimetype;
       const coverMimeType = files.coverImage[0].mimetype.split("/").at(-1);
       const filePath = path.resolve(
         __dirname,
