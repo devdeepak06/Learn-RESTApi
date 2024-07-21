@@ -173,12 +173,14 @@ const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const book = await bookModel.findOne({ _id: bookId });
     if (!book) {
-      return next(createHttpError(404, "Book not found"));
+      return next(createHttpError(404, "File not found"));
     }
     //check access
     const _req = req as AuthRequest;
     if (book.author.toString() != _req.userId) {
-      return next(createHttpError(403, "Unauthorized access"));
+      return next(
+        createHttpError(403, "You do not have permission to delete this file.")
+      );
     }
 
     const coverFileSplits = book.coverImage.split("/");
@@ -202,9 +204,9 @@ const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
     });
     //also delete from mongodb
     await bookModel.deleteOne({ _id: bookId });
-    return res.sendStatus(201);
+    return res.status(201).json({ message: "File successfully deleted." });
   } catch (err) {
-    return next(createHttpError(500, "Book not found"));
+    return next(createHttpError(404, "File not found"));
   }
 };
 
