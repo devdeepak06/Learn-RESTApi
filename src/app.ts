@@ -6,24 +6,25 @@ import bookRouter from "./book/bookRouter";
 import { config } from "./config/config";
 
 const app = express();
+
 app.use(
   cors({
     origin: config.frontEndUrl,
   })
 );
+
 app.use(express.json());
+
 // Routes
-// HTTP methods: GET, POST, PUT, DELETE, PATCH
-app.get("/", (req, res, next) => {
-  try {
-    res.json({ message: "Welcome to the Elib Rest Api App." });
-  } catch (error) {
-    next(error);
-  }
+// Http methods: GET, POST, PUT, PATCH, DELETE
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to elib apis" });
 });
 
 app.use("/api/users", userRouter);
 app.use("/api/books", bookRouter);
+
+// Global error handler
 app.use(globalErrorHandler);
 
 export default app;
